@@ -82,7 +82,7 @@ program BiomeESS
    integer :: simu_steps,idata
    character(len=50) :: filepath_out,filesuffix
    character(len=50) :: parameterfile(10),chaSOM(10)
-   character(len=50) :: namelistfile = 'parameters_WC_biodiversity.nml' ! 'parameters_CN.nml'
+   character(len=50) :: namelistfile = 'parameters_Allocation.nml' ! 'parameters_CN.nml'
    ! 'parameters_Allocation.nml' !'parameters_Konza.nml' !
    !
 
@@ -188,6 +188,7 @@ program BiomeESS
         vegn%Tc_daily = vegn%Tc_daily/steps_per_day
         tsoil         = tsoil/steps_per_day
         soil_theta    = vegn%thetaS
+
         !write(*,*)idays,equi_days
         call daily_diagnostics(vegn,forcingData(idata),iyears,idoy,idays,fno3,fno4)
         !write(*,*)iyears,idoy
@@ -196,12 +197,18 @@ program BiomeESS
         !call vegn_starvation(vegn)
         call vegn_growth_EW(vegn)
 
+        ! xxx debug
+        if (iyears==5) stop         
+
         !! annual calls
         idata = MOD(simu_steps+1, datalines)+1 !
         year1 = forcingData(idata)%year  ! Check if it is the last day of a year
         new_annual_cycle = ((year0 /= year1).OR. & ! new year
                 (idata == steps_per_day .and. simu_steps > datalines)) ! last line
+
         if(new_annual_cycle)then
+
+            print*,'year, vegn%nsc ', iyears, vegn%nsc, vegn%lai
 
             idoy = 0
             !call annual_calls(vegn)

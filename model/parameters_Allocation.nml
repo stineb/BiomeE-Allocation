@@ -60,8 +60,8 @@ maturalage    = 0.5,     5,        5,        5,        5,      5,        5,     
                                ! low  N input --> Evergreen
 
 ! Model run
- filepath_in = '/Users/eweng/Documents/BiomeESS/forcingData/'
- climfile    = 'US-Ha1forcing.txt' ! 'US-WCrforcing.txt' !   'CA-Manforcing.txt' !
+ filepath_in = '/Users/benjaminstocker/cagibi/BiomeE-Allocation/model/input/'
+ climfile    = 'US-WCrforcing.txt' ! 'US-WCrforcing.txt' !   'CA-Manforcing.txt' !
                ! 'CA-Manforcing.txt'   !  'US-WBWforcing.txt'
                !   'US-Dk1forcing.txt' ! CA-Obsforcing.txt
                !   'ORNL_forcing.txt'  ! 'KNZ_amb.csv' !  'KNZ_irr.csv' !

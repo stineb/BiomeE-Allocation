@@ -134,7 +134,7 @@ program BiomeESS
 
    write(fno5,'(1(a5,","),80(a12,","))')  'year',              &
         'CAI','LAI','GPP', 'Rauto',   'Rh',                    &
-        'rain','SiolWater','Transp','Evap','Runoff',           &
+        'rain','SoilWater','Transp','Evap','Runoff',           &
         'plantC','soilC',    'plantN', 'soilN','totN',         &
         'NSC', 'SeedC', 'leafC', 'rootC', 'SapwoodC', 'WoodC', &
         'NSN', 'SeedN', 'leafN', 'rootN', 'SapwoodN', 'WoodN', &
@@ -189,6 +189,9 @@ program BiomeESS
              ! diagnostics
              call hourly_diagnostics(vegn,forcingData(idata),iyears,idoy,i,idays,fno1)
         enddo ! hourly or half-hourly
+
+        ! if (idoy == 365) stop 'consistency?'
+
         vegn%Tc_daily = vegn%Tc_daily/steps_per_day
         tsoil         = tsoil/steps_per_day
         soil_theta    = vegn%thetaS

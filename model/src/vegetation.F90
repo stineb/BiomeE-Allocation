@@ -163,7 +163,6 @@ subroutine vegn_photosynthesis (forcing, vegn)
         !if(isnan(cc%gpp))cc%gpp=0.0
 
         ! print*,'vegn_photosynthesis: cc%gpp = ', cc%gpp
-        ! stop
 
         if(isnan(cc%gpp))stop '"gpp" is a NaN'
      else

@@ -199,8 +199,10 @@ program BiomeESS
         !write(*,*)idays,equi_days
         call daily_diagnostics(vegn,forcingData(idata),iyears,idoy,idays,fno3,fno4)
         !write(*,*)iyears,idoy
+
         ! daily calls
         call vegn_phenology(vegn,j)
+
         !call vegn_starvation(vegn)
         call vegn_growth_EW(vegn)
 

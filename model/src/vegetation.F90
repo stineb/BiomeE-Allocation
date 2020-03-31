@@ -661,6 +661,9 @@ subroutine fetch_CN_for_growth(cc)
         cc%leafarea  = leaf_area_from_biomass(cc%bl,cc%species,cc%layer,cc%firstlayer)
         cc%lai       = cc%leafarea/cc%crownarea !(cc%crownarea *(1.0-sp%internal_gap_frac))
         vegn%LAI     = vegn%LAI + cc%leafarea  * cc%nindivs
+
+        ! print*,'i, cc%leafarea, cc%lai, cc%nindivs, vegn%LAI ', i, cc%leafarea, cc%lai, cc%nindivs, vegn%LAI
+
         call rootarea_and_verticalprofile(cc)
 !       convert sapwood to heartwood for woody plants ! Nitrogen from sapwood to heart wood
         if(sp%lifeform>0)then
@@ -2154,6 +2157,7 @@ subroutine initialize_vegn_tile(vegn,nCohorts,namelistfile)
       vegn%totN =  vegn%initialN0
 
    endif  ! initialization: random or pre-described
+
 end subroutine initialize_vegn_tile
 
 ! ====================================

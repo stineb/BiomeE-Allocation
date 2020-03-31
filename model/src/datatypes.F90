@@ -995,15 +995,21 @@ subroutine daily_diagnostics(vegn,forcing,iyears,idoy,iday,fno3,fno4)
           cc%annualNPP = cc%annualNPP + cc%dailyNPP
           cc%annualResp = cc%annualResp + cc%dailyResp
           cc%annualTrsp = cc%annualTrsp + cc%dailyTrsp
+          
           ! Zero Daily variables
           cc%dailyTrsp = 0.0
           cc%dailyGPP = 0.0
           cc%dailyNPP = 0.0
           cc%dailyResp = 0.0
+      
       enddo
+
+      ! Beni Stocker: moved summarize_tile() out of conditional statement below
+      ! in order to update tile-level LAI each day (required e.g. for water balance)
+      call summarize_tile(vegn)
+      
       !! Tile level, daily
       if(outputdaily.and. iday>equi_days) then
-         call summarize_tile(vegn)
          write(fno4,'(2(I5,","),60(F12.6,","))') iyears, idoy,  &
             vegn%tc_daily, vegn%dailyPrcp, vegn%soilwater,      &
             vegn%dailyTrsp, vegn%dailyEvap,vegn%dailyRoff,      &

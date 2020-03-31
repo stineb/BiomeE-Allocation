@@ -1017,6 +1017,7 @@ subroutine daily_diagnostics(vegn,forcing,iyears,idoy,iday,fno3,fno4)
             vegn%MicrobialC, vegn%metabolicL, vegn%structuralL, &
             vegn%MicrobialN*1000, vegn%metabolicN*1000, vegn%structuralN*1000, &
             vegn%mineralN*1000,   vegn%dailyNup*1000
+      
       endif
 
         !annual tile

@@ -89,11 +89,11 @@ program BiomeESS
    ! create output files
    filepath_out='output/'
    filesuffix  = 'test.csv' ! tag for simulation experiments
-   plantcohorts = trim(filepath_out)//'Annual_cohorts'//trim(filesuffix)
-   plantCNpools = trim(filepath_out)//'Cohorts_daily'//trim(filesuffix)  ! daily
-   soilCNpools  = trim(filepath_out)//'Ecosystem_daily'//trim(filesuffix)
-   allpools     = trim(filepath_out)//'Ecosystem_yearly'//trim(filesuffix)
-   faststepfluxes = trim(filepath_out)//'PhotosynthesisDynamics'//trim(filesuffix) ! hourly
+   plantcohorts = trim(filepath_out)//'annual_cohorts_'//trim(filesuffix)
+   plantCNpools = trim(filepath_out)//'daily_cohorts_'//trim(filesuffix)  ! daily
+   soilCNpools  = trim(filepath_out)//'daily_tile_'//trim(filesuffix)
+   allpools     = trim(filepath_out)//'annual_tile_'//trim(filesuffix)
+   faststepfluxes = trim(filepath_out)//'PhotosynthesisDynamics_'//trim(filesuffix) ! hourly
 
    fno1=91; fno2=101; fno3=102; fno4=103; fno5=104
    open(fno1, file=trim(faststepfluxes),ACTION='write', IOSTAT=istat1)
@@ -101,31 +101,33 @@ program BiomeESS
    open(fno3,file=trim(plantCNpools),   ACTION='write', IOSTAT=istat2)
    open(fno4,file=trim(soilCNpools),    ACTION='write', IOSTAT=istat3)
    open(fno5,file=trim(allpools),       ACTION='write', IOSTAT=istat3)
-   ! head
+   
+   ! write header to files
    write(fno1,'(5(a8,","),25(a12,","))')      &
         'year','doy','hour','rad',            &
         'Tair','Prcp', 'GPP', 'Resp',         &
         'Transp','Evap','Runoff','Soilwater', &
         'wcl','FLDCAP','WILTPT'
+
    write(fno2,'(3(a5,","),25(a9,","))')            &
         'cID','PFT','layer','density', 'f_layer',  &
         'dDBH','dbh','height','Acrown',            &
         'wood','nsc', 'NSN','NPPtr','seed',        &
-        'NPPL','NPPR','NPPW','GPP-yr','NPP-yr',    &
+        'NPPL','NPPR','NPPW','GPP_yr','NPP_yr',    &
         'N_uptk','N_fix','maxLAI'
 
    write(fno3,'(5(a5,","),25(a8,","))')              &
         'year','doy','hour','cID','PFT',             &
         'layer','density', 'f_layer', 'LAI',         &
         'gpp','resp','transp',                       &
-        'NSC','seedC','leafC','rootC','SW-C','HW-C', &
-        'NSN','seedN','leafN','rootN','SW-N','HW-N'
+        'NSC','seedC','leafC','rootC','SW_C','HW_C', &
+        'NSN','seedN','leafN','rootN','SW_N','HW_N'
 
    write(fno4,'(2(a5,","),55(a10,","))')  'year','doy',    &
         'Tc','Prcp', 'totWs',  'Trsp', 'Evap','Runoff',    &
         'ws1','ws2','ws3', 'LAI','GPP', 'Rauto', 'Rh',     &
-        'NSC','seedC','leafC','rootC','SW-C','HW-C',       &
-        'NSN','seedN','leafN','rootN','SW-N','HW-N',       &
+        'NSC','seedC','leafC','rootC','SW_C','HW_C',       &
+        'NSN','seedN','leafN','rootN','SW_N','HW_N',       &
         'McrbC', 'fastSOM',   'slowSOM',                   &
         'McrbN', 'fastSoilN', 'slowSoilN',                 &
         'mineralN', 'N_uptk'
@@ -139,8 +141,7 @@ program BiomeESS
         'McrbC','fastSOM',   'SlowSOM',                        &
         'McrbN','fastSoilN', 'slowSoilN',                      &
         'mineralN', 'N_fxed','N_uptk','N_yrMin','N_P2S','N_loss', &
-        'seedC','seedN','Seedling-C','Seedling-N'
-
+        'seedC','seedN','Seedling_C','Seedling_N'
 
    ! Parameter initialization: Initialize PFT parameters
    call initialize_PFT_data(namelistfile)
@@ -197,9 +198,6 @@ program BiomeESS
         !call vegn_starvation(vegn)
         call vegn_growth_EW(vegn)
 
-        ! xxx debug
-        if (iyears==5) stop         
-
         !! annual calls
         idata = MOD(simu_steps+1, datalines)+1 !
         year1 = forcingData(idata)%year  ! Check if it is the last day of a year
@@ -208,7 +206,7 @@ program BiomeESS
 
         if(new_annual_cycle)then
 
-            print*,'year, vegn%nsc ', iyears, vegn%nsc, vegn%lai
+            print*,'iyears ', iyears
 
             idoy = 0
             !call annual_calls(vegn)

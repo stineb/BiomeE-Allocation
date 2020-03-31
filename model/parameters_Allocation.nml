@@ -61,7 +61,7 @@ maturalage    = 0.5,     5,        5,        5,        5,      5,        5,     
 
 ! Model run
  filepath_in = '/Users/benjaminstocker/cagibi/BiomeE-Allocation/model/input/'
- climfile    = 'US-WCrforcing.txt' ! 'US-WCrforcing.txt' !   'CA-Manforcing.txt' !
+ climfile    = 'ORNL_forcing.txt'  !'US-WCrforcing.txt' ! 'US-WCrforcing.txt' !   'CA-Manforcing.txt' !
                ! 'CA-Manforcing.txt'   !  'US-WBWforcing.txt'
                !   'US-Dk1forcing.txt' ! CA-Obsforcing.txt
                !   'ORNL_forcing.txt'  ! 'KNZ_amb.csv' !  'KNZ_irr.csv' !

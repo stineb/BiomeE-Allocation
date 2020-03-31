@@ -153,8 +153,9 @@ program BiomeESS
    call Zero_diagnostics(vegn)
 
    ! Read in forcing data
-   !call read_FACEforcing(forcingData,datalines,days_data,yr_data,timestep)
-   call read_NACPforcing(forcingData,datalines,days_data,yr_data,timestep)
+   call read_FACEforcing(forcingData,datalines,days_data,yr_data,timestep)
+   ! call read_NACPforcing(forcingData,datalines,days_data,yr_data,timestep)
+
    steps_per_day = int(24.0/timestep)
    dt_fast_yr = 1.0/(365.0 * steps_per_day)
    step_seconds = 24.0*3600.0/steps_per_day ! seconds_per_year * dt_fast_yr
@@ -175,7 +176,9 @@ program BiomeESS
         vegn%Tc_daily = 0.0
         tsoil         = 0.0
         do i=1,steps_per_day
-             idata = MOD(simu_steps, datalines)+1
+
+          idata = MOD(simu_steps, datalines)+1
+
              year0 = forcingData(idata)%year  ! Current year
              vegn%Tc_daily = vegn%Tc_daily + forcingData(idata)%Tair
              tsoil         = forcingData(idata)%tsoil
@@ -206,7 +209,8 @@ program BiomeESS
 
         if(new_annual_cycle)then
 
-            print*,'iyears ', iyears
+            print*,'sim. year: ', iyears
+            print*,'real year  ', year0
 
             idoy = 0
             !call annual_calls(vegn)

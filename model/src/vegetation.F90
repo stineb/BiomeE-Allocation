@@ -162,6 +162,9 @@ subroutine vegn_photosynthesis (forcing, vegn)
         cc%gpp  = (psyn-resp) * mol_C * cc%leafarea * step_seconds ! kgC step-1 tree-1
         !if(isnan(cc%gpp))cc%gpp=0.0
 
+        ! print*,'vegn_photosynthesis: cc%gpp = ', cc%gpp
+        ! stop
+
         if(isnan(cc%gpp))stop '"gpp" is a NaN'
      else
         ! no leaves means no photosynthesis and no stomatal conductance either

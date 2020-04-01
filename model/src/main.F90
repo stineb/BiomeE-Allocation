@@ -82,18 +82,18 @@ program BiomeESS
    integer :: simu_steps,idata
    character(len=50) :: filepath_out,filesuffix
    character(len=50) :: parameterfile(10),chaSOM(10)
-   character(len=50) :: namelistfile = 'parameters_Allocation.nml' !'parameters_WC_biodiversity.nml' ! 'parameters_CN.nml'
-   !  !'parameters_Konza.nml' !
+   character(len=50) :: namelistfile = 'parameters_Allocation.nml' ! 'parameters_CN.nml'
+   ! 'parameters_Allocation.nml' !'parameters_Konza.nml' !
    !
 
    ! create output files
    filepath_out='output/'
    filesuffix  = 'test.csv' ! tag for simulation experiments
-   plantcohorts = trim(filepath_out)//'Annual_cohorts'//trim(filesuffix)
-   plantCNpools = trim(filepath_out)//'Cohorts_daily'//trim(filesuffix)  ! daily
-   soilCNpools  = trim(filepath_out)//'Ecosystem_daily'//trim(filesuffix)
-   allpools     = trim(filepath_out)//'Ecosystem_yearly'//trim(filesuffix)
-   faststepfluxes = trim(filepath_out)//'PhotosynthesisDynamics'//trim(filesuffix) ! hourly
+   plantcohorts = trim(filepath_out)//'annual_cohorts_'//trim(filesuffix)
+   plantCNpools = trim(filepath_out)//'daily_cohorts_'//trim(filesuffix)  ! daily
+   soilCNpools  = trim(filepath_out)//'daily_tile_'//trim(filesuffix)
+   allpools     = trim(filepath_out)//'annual_tile_'//trim(filesuffix)
+   faststepfluxes = trim(filepath_out)//'PhotosynthesisDynamics_'//trim(filesuffix) ! hourly
 
    fno1=91; fno2=101; fno3=102; fno4=103; fno5=104
    open(fno1, file=trim(faststepfluxes),ACTION='write', IOSTAT=istat1)
@@ -101,46 +101,47 @@ program BiomeESS
    open(fno3,file=trim(plantCNpools),   ACTION='write', IOSTAT=istat2)
    open(fno4,file=trim(soilCNpools),    ACTION='write', IOSTAT=istat3)
    open(fno5,file=trim(allpools),       ACTION='write', IOSTAT=istat3)
-   ! head
+   
+   ! write header to files
    write(fno1,'(5(a8,","),25(a12,","))')      &
         'year','doy','hour','rad',            &
         'Tair','Prcp', 'GPP', 'Resp',         &
         'Transp','Evap','Runoff','Soilwater', &
         'wcl','FLDCAP','WILTPT'
+
    write(fno2,'(3(a5,","),25(a9,","))')            &
         'cID','PFT','layer','density', 'f_layer',  &
         'dDBH','dbh','height','Acrown',            &
         'wood','nsc', 'NSN','NPPtr','seed',        &
-        'NPPL','NPPR','NPPW','GPP-yr','NPP-yr',    &
+        'NPPL','NPPR','NPPW','GPP_yr','NPP_yr',    &
         'N_uptk','N_fix','maxLAI'
 
    write(fno3,'(5(a5,","),25(a8,","))')              &
         'year','doy','hour','cID','PFT',             &
         'layer','density', 'f_layer', 'LAI',         &
         'gpp','resp','transp',                       &
-        'NSC','seedC','leafC','rootC','SW-C','HW-C', &
-        'NSN','seedN','leafN','rootN','SW-N','HW-N'
+        'NSC','seedC','leafC','rootC','SW_C','HW_C', &
+        'NSN','seedN','leafN','rootN','SW_N','HW_N'
 
    write(fno4,'(2(a5,","),55(a10,","))')  'year','doy',    &
         'Tc','Prcp', 'totWs',  'Trsp', 'Evap','Runoff',    &
         'ws1','ws2','ws3', 'LAI','GPP', 'Rauto', 'Rh',     &
-        'NSC','seedC','leafC','rootC','SW-C','HW-C',       &
-        'NSN','seedN','leafN','rootN','SW-N','HW-N',       &
+        'NSC','seedC','leafC','rootC','SW_C','HW_C',       &
+        'NSN','seedN','leafN','rootN','SW_N','HW_N',       &
         'McrbC', 'fastSOM',   'slowSOM',                   &
         'McrbN', 'fastSoilN', 'slowSoilN',                 &
         'mineralN', 'N_uptk'
 
    write(fno5,'(1(a5,","),80(a12,","))')  'year',              &
         'CAI','LAI','GPP', 'Rauto',   'Rh',                    &
-        'rain','SiolWater','Transp','Evap','Runoff',           &
+        'rain','SoilWater','Transp','Evap','Runoff',           &
         'plantC','soilC',    'plantN', 'soilN','totN',         &
         'NSC', 'SeedC', 'leafC', 'rootC', 'SapwoodC', 'WoodC', &
         'NSN', 'SeedN', 'leafN', 'rootN', 'SapwoodN', 'WoodN', &
         'McrbC','fastSOM',   'SlowSOM',                        &
         'McrbN','fastSoilN', 'slowSoilN',                      &
         'mineralN', 'N_fxed','N_uptk','N_yrMin','N_P2S','N_loss', &
-        'seedC','seedN','Seedling-C','Seedling-N'
-
+        'seedC','seedN','Seedling_C','Seedling_N'
 
    ! Parameter initialization: Initialize PFT parameters
    ! print*,'1: ', vegn%LAI
@@ -157,8 +158,9 @@ program BiomeESS
    call Zero_diagnostics(vegn)
 
    ! Read in forcing data
-   !call read_FACEforcing(forcingData,datalines,days_data,yr_data,timestep)
-   call read_NACPforcing(forcingData,datalines,days_data,yr_data,timestep)
+   call read_FACEforcing(forcingData,datalines,days_data,yr_data,timestep)
+   ! call read_NACPforcing(forcingData,datalines,days_data,yr_data,timestep)
+
    steps_per_day = int(24.0/timestep)
    dt_fast_yr = 1.0/(365.0 * steps_per_day)
    step_seconds = 24.0*3600.0/steps_per_day ! seconds_per_year * dt_fast_yr
@@ -182,7 +184,8 @@ program BiomeESS
         tsoil         = 0.0
         do i=1,steps_per_day
 
-             idata = MOD(simu_steps, datalines)+1
+          idata = MOD(simu_steps, datalines)+1
+
              year0 = forcingData(idata)%year  ! Current year
              vegn%Tc_daily = vegn%Tc_daily + forcingData(idata)%Tair
              tsoil         = forcingData(idata)%tsoil
@@ -214,22 +217,22 @@ program BiomeESS
              ! diagnostics
              call hourly_diagnostics(vegn,forcingData(idata),iyears,idoy,i,idays,fno1)
         enddo ! hourly or half-hourly
+
+        ! if (idoy == 365) stop 'consistency?'
+
         vegn%Tc_daily = vegn%Tc_daily/steps_per_day
         tsoil         = tsoil/steps_per_day
         soil_theta    = vegn%thetaS
-
-        ! if (idays>3) then
-        !   ! print*,forcingData(idata-48:idata)
-        !   stop 'here'
-        ! end if
 
         !write(*,*)idays,equi_days
         ! print*,'6: ', vegn%LAI
         call daily_diagnostics(vegn,forcingData(idata),iyears,idoy,idays,fno3,fno4)
         !write(*,*)iyears,idoy
+
         ! daily calls
         ! print*,'7: ', vegn%LAI
         call vegn_phenology(vegn,j)
+
         !call vegn_starvation(vegn)
         ! print*,'8: ', vegn%LAI
         call vegn_growth_EW(vegn)
@@ -241,10 +244,11 @@ program BiomeESS
         year1 = forcingData(idata)%year  ! Check if it is the last day of a year
         new_annual_cycle = ((year0 /= year1).OR. & ! new year
                 (idata == steps_per_day .and. simu_steps > datalines)) ! last line
+
         if(new_annual_cycle)then
 
-            print*,'sim. year  ', iyears
-            print*,'real year: ', year0
+            print*,'sim. year: ', iyears
+            print*,'real year  ', year0
 
             idoy = 0
             !call annual_calls(vegn)

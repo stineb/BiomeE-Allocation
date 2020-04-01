@@ -60,18 +60,16 @@ N_input             = 0.0E-3, ! 2.4E-3, ! kg N m-2 yr-1, N deposit: 0.8 g N m-2 
                            ! low  N input --> Evergreen
 
 ! Model run
-filepath_in = '/Users/bestocke/cagibi/BiomeE-Allocation/model/input/'    !'/Users/eweng/Documents/BiomeESS/forcingData/'
-climfile    = 'US-WCrforcing.txt' ! 'US-Ha1forcing.txt' !    'CA-Manforcing.txt' !
-           ! 'CA-Manforcing.txt'   !  'US-WBWforcing.txt'
-           !   'US-Dk1forcing.txt' ! CA-Obsforcing.txt
-           !   'ORNL_forcing.txt'  ! 'KNZ_amb.csv' !  'KNZ_irr.csv' !
-
-model_run_years       =  1800, ! 1200,
-equi_days             =  0,
-outputhourly          =  .False.,
-outputdaily           =  .True.,
-do_U_shaped_mortality =  .False.,
-update_annualLAImax   =  .False.,
-do_closedN_run        =  .True.
-
-/
+ filepath_in = '/Users/benjaminstocker/cagibi/BiomeE-Allocation/model/input/'
+ climfile    = 'ORNL_forcing.txt'  !'US-WCrforcing.txt' ! 'US-WCrforcing.txt' !   'CA-Manforcing.txt' !
+               ! 'CA-Manforcing.txt'   !  'US-WBWforcing.txt'
+               !   'US-Dk1forcing.txt' ! CA-Obsforcing.txt
+               !   'ORNL_forcing.txt'  ! 'KNZ_amb.csv' !  'KNZ_irr.csv' !
+ model_run_years       =  100, ! 1200,
+ equi_days             =  0,
+ outputhourly          =  .False. ! .True. !
+ outputdaily           =  .True.  ! .False. ! .True.
+ do_U_shaped_mortality =  .False. ! .True. !
+ update_annualLAImax   =  .False. ! .True. !
+ do_closedN_run        =  .True.
+ /

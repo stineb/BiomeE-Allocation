@@ -1004,21 +1004,21 @@ subroutine daily_diagnostics(vegn,forcing,iyears,idoy,iday,fno3,fno4)
           cc%annualNPP = cc%annualNPP + cc%dailyNPP
           cc%annualResp = cc%annualResp + cc%dailyResp
           cc%annualTrsp = cc%annualTrsp + cc%dailyTrsp
+          
           ! Zero Daily variables
           cc%dailyTrsp = 0.0
           cc%dailyGPP = 0.0
           cc%dailyNPP = 0.0
           cc%dailyResp = 0.0
+      
       enddo
-      !! Tile level, daily
-      print*,'outputdaily ', outputdaily
-      print*,'equi_days   ', equi_days
-      print*,'iday        ', iday
 
-      if(outputdaily .and. iday>equi_days) then
-        print*,'6a: ', vegn%LAI
-         call summarize_tile(vegn)
-        print*,'6b: ', vegn%LAI
+      ! Beni Stocker: moved summarize_tile() out of conditional statement below
+      ! in order to update tile-level LAI each day (required e.g. for water balance)
+      call summarize_tile(vegn)
+      
+      !! Tile level, daily
+      if(outputdaily.and. iday>equi_days) then
          write(fno4,'(2(I5,","),60(F12.6,","))') iyears, idoy,  &
             vegn%tc_daily, vegn%dailyPrcp, vegn%soilwater,      &
             vegn%dailyTrsp, vegn%dailyEvap,vegn%dailyRoff,      &
@@ -1032,6 +1032,7 @@ subroutine daily_diagnostics(vegn,forcing,iyears,idoy,iday,fno3,fno4)
             vegn%MicrobialC, vegn%metabolicL, vegn%structuralL, &
             vegn%MicrobialN*1000, vegn%metabolicN*1000, vegn%structuralN*1000, &
             vegn%mineralN*1000,   vegn%dailyNup*1000
+      
       endif
 
 

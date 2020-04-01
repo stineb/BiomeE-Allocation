@@ -140,6 +140,9 @@ subroutine SoilWaterDynamicsLayer(forcing,vegn)    !outputs
 !    calculate kappa  ! light extinction coefficient of corwn layers
      kappa = 0.75
 !    thermodynamic parameters for air
+
+      ! print*, forcing%radiation, kappa, vegn%LAI    ! xxx debug
+
       Rsoilabs = forcing%radiation * exp(-kappa*vegn%LAI)
       Hgrownd = 0.0
       TairK = forcing%Tair
@@ -160,6 +163,9 @@ subroutine SoilWaterDynamicsLayer(forcing,vegn)    !outputs
 !           Eleaf(ileaf)=1.0*
 !     &     (slope*Y*Rnstar(ileaf)+rhocp*Dair/(rbH_L+raero))/    !2* Weng 0215
 !     &     (slope*Y+psyc*(rswv+rbw+raero)/(rbH_L+raero))
+
+      ! print*, slope, rhocp, Dair, raero, psyc, Rsoilabs, rsoil ! xxx debug
+
       Esoil=(slope*Rsoilabs + rhocp*Dair/raero)/ &
             (slope + psyc*(1.0+rsoil/raero)) *   &
             max(vegn%wcl(1),0.0)/FLDCAP ! (vegn%wcl(1)-ws0)/(FLDCAP-ws0)
@@ -167,6 +173,8 @@ subroutine SoilWaterDynamicsLayer(forcing,vegn)    !outputs
 !      Hsoil = Rsoilabs - Esoil - Hgrownd
 
   !Calculate Esoil, kg m-2 step-1
+  ! print*, Esoil, H2OLv, step_seconds, vegn%wcl(1), thksl(1)  ! xxx debug
+
   vegn%evap = min(Esoil/H2OLv * step_seconds, &
                   0.2*vegn%wcl(1) * thksl(1) *1000.) ! kg m-2 step-1
   !vegn%wcl(1) = vegn%wcl(1) - vegn%evap/(thksl(1) *1000.)

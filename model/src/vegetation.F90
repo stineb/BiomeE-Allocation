@@ -38,6 +38,7 @@ public :: vegn_annual_starvation,Zero_diagnostics
   tsoil  = forcing%tsoil -273.16  ! degC
   thetaS = (vegn%wcl(2)-WILTPT)/(FLDCAP-WILTPT)
 
+
   ! Photosynsthesis
   call vegn_photosynthesis(forcing, vegn)
   ! Update soil water
@@ -67,7 +68,7 @@ public :: vegn_annual_starvation,Zero_diagnostics
 
 !! Nitrogen uptake
    call vegn_N_uptake(vegn, forcing%tsoil)
-
+   
 end subroutine vegn_CNW_budget_fast
 
 ! ============= Plant physiology ========================================
@@ -128,6 +129,8 @@ subroutine vegn_photosynthesis (forcing, vegn)
   ! Photosynthesis
   accuCAI = 0.0
   do i = 1, vegn%n_cohorts
+
+
      cc => vegn%cohorts(i)
      associate ( sp => spdata(cc%species) )
      if(cc%status == LEAF_ON .and. cc%lai > 0.1) then
@@ -144,7 +147,7 @@ subroutine vegn_photosynthesis (forcing, vegn)
          cana_co2= forcing%CO2 ! co2 concentration in canopy air space, mol CO2/mol dry air
         ! recalculate the water supply to mol H20 per m2 of leaf per second
          water_supply = cc%W_supply/(cc%leafarea*step_seconds*mol_h2o) ! mol m-2 leafarea s-1
-      
+
         !call get_vegn_wet_frac (cohort, fw=fw, fs=fs)
         fw = 0.0
         fs = 0.0
@@ -263,6 +266,7 @@ subroutine gs_Leuning(rad_top, rad_net, tl, ea, lai, &
   kc=0.000404 * exp(59356/Rgas*(1.0/298.2-1.0/tl))*p_sea/p_surf ! Weng, 2013-01-10
   vm=spdata(pft)%Vmax*exp(24920/Rgas*(1.0/298.2-1.0/tl)) ! / ((layer-1)*1.0+1.0) ! Ea = 33920
 
+
   !decrease Vmax due to aging of temperate deciduous leaves 
   !(based on Wilson, Baldocchi and Hanson (2001)."Plant,Cell, and Environment", vol 24, 571-583)
 !! Turned off by Weng, 2013-02-01, since we can't trace new leaves
@@ -272,6 +276,8 @@ subroutine gs_Leuning(rad_top, rad_net, tl, ea, lai, &
 
   ! capgam=0.209/(9000.0*exp(-5000.0*(1.0/288.2-1.0/tl))); - Foley formulation, 1986
   capgam=0.5*kc/ko*0.21*0.209; ! Farquhar & Caemmerer 1982
+
+
 
   ! Find respiration for the whole canopy layer
   
@@ -379,7 +385,7 @@ subroutine gs_Leuning(rad_top, rad_net, tl, ea, lai, &
   endif
 
   ! find water availability diagnostic demand
-  Ed = gs_w * ds*mol_air/mol_h2o ! ds*mol_air/mol_h2o is the humidity deficit in [mol_h2o/mol_air]
+  Ed = gs_w * ds * mol_air/mol_h2o ! ds*mol_air/mol_h2o is the humidity deficit in [mol_h2o/mol_air]
   ! the factor mol_air/mol_h2o makes units of gs_w and humidity deficit ds compatible:
   if (Ed>ws) then
      w_scale=ws/Ed;
@@ -556,6 +562,9 @@ subroutine fetch_CN_for_growth(cc)
   do i = 1, vegn%n_cohorts   
      cc => vegn%cohorts(i)
  !    call biomass_allocation(cc)
+
+     ! print*,i, cc%status
+
      associate (sp => spdata(cc%species)) ! F2003
      if (cc%status == LEAF_ON) then
         ! Get carbon from NSC pool
@@ -658,7 +667,11 @@ subroutine fetch_CN_for_growth(cc)
         cc%crownarea = cc%crownarea + dCA
         cc%leafarea  = leaf_area_from_biomass(cc%bl,cc%species,cc%layer,cc%firstlayer)
         cc%lai       = cc%leafarea/cc%crownarea !(cc%crownarea *(1.0-sp%internal_gap_frac))
+        
+        print*, 'vegn growth',  vegn%LAI, cc%leafarea, cc%nindivs, cc%crownarea    ! xxx debug
+
         vegn%LAI     = vegn%LAI + cc%leafarea  * cc%nindivs
+
         call rootarea_and_verticalprofile(cc)
 !       convert sapwood to heartwood for woody plants ! Nitrogen from sapwood to heart wood
         if(sp%lifeform>0)then
@@ -1515,6 +1528,7 @@ subroutine SOMdecomposition(vegn, tsoil, thetaS)
 !  runoff = vegn%Wrunoff * 365*24*3600 *dt_fast_yr !kgH2O m-2 s-1 ->kg m-2/time step
   runoff = vegn%runoff  !* dt_fast_yr !kgH2O m-2 yr-1 ->kgH2O m-2/time step, weng 2017-10-15
 ! CN ratios of soil C pools
+
   CNfast = vegn%metabolicL/vegn%metabolicN
   CNslow = vegn%structuralL/vegn%structuralN
 
@@ -2103,7 +2117,9 @@ subroutine initialize_vegn_tile(vegn,nCohorts,namelistfile)
       vegn%thetaS = 1.0
 
       ! tile
+      print*, 'initialize_vegn_tile() 1: ',  vegn%LAI   ! xxx debug
       call summarize_tile(vegn)
+      print*, 'initialize_vegn_tile() 2: ',  vegn%LAI   ! xxx debug
       vegn%initialN0 = vegn%NSN + vegn%SeedN + vegn%leafN +      &
                        vegn%rootN + vegn%SapwoodN + vegn%woodN + &
                        vegn%MicrobialN + vegn%metabolicN +       &
@@ -2144,7 +2160,9 @@ subroutine initialize_vegn_tile(vegn,nCohorts,namelistfile)
       vegn%previousN   = vegn%mineralN
 
       ! tile
+      print*, 'initialize_vegn_tile() 3: ',  vegn%LAI   ! xxx debug
       call summarize_tile(vegn)
+      print*, 'initialize_vegn_tile() 4: ',  vegn%LAI   ! xxx debug
       vegn%initialN0 = vegn%NSN + vegn%SeedN + vegn%leafN +      &
                        vegn%rootN + vegn%SapwoodN + vegn%woodN + &
                        vegn%MicrobialN + vegn%metabolicN +       &

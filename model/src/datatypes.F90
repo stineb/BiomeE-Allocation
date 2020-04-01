@@ -806,6 +806,9 @@ subroutine Zero_diagnostics(vegn)
   !-------local var
   type(cohort_type),pointer :: cc
   integer :: i
+
+  print*,'Zero_diagnostics() 1: vegn%dailyEvap ', vegn%dailyEvap
+
   !daily
   vegn%dailyfixedN = 0.
   vegn%dailyPrcp = 0.0
@@ -863,6 +866,9 @@ subroutine Zero_diagnostics(vegn)
      cc%NPPwood   = 0.0
      cc%DBH_ys    = cc%DBH
   enddo
+
+  print*,'Zero_diagnostics() 2: vegn%dailyEvap ', vegn%dailyEvap
+
 end subroutine Zero_diagnostics
 
 ! ========================
@@ -942,6 +948,7 @@ end subroutine summarize_tile
   enddo
   ! NEP is equal to NNP minus soil respiration
   vegn%nep = vegn%npp - vegn%rh ! kgC m-2 hour-1; time step is hourly
+
   !! Output horly diagnostics
   If(outputhourly.and. iday>equi_days) &
     write(fno1,'(3(I5,","),25(E11.4,","),25(F8.2,","))')  &
@@ -963,6 +970,8 @@ end subroutine summarize_tile
   vegn%dailyEvap = vegn%dailyEvap + vegn%evap
   vegn%dailyRoff = vegn%dailyRoff + vegn%runoff
   vegn%dailyPrcp = vegn%dailyPrcp + forcing%rain * step_seconds
+
+  ! print*,'hourly_diagnostics() : vegn%evap, vegn%dailyEvap ', vegn%evap, vegn%dailyEvap
 
 end subroutine hourly_diagnostics
 
@@ -1002,8 +1011,14 @@ subroutine daily_diagnostics(vegn,forcing,iyears,idoy,iday,fno3,fno4)
           cc%dailyResp = 0.0
       enddo
       !! Tile level, daily
-      if(outputdaily.and. iday>equi_days) then
+      print*,'outputdaily ', outputdaily
+      print*,'equi_days   ', equi_days
+      print*,'iday        ', iday
+
+      if(outputdaily .and. iday>equi_days) then
+        print*,'6a: ', vegn%LAI
          call summarize_tile(vegn)
+        print*,'6b: ', vegn%LAI
          write(fno4,'(2(I5,","),60(F12.6,","))') iyears, idoy,  &
             vegn%tc_daily, vegn%dailyPrcp, vegn%soilwater,      &
             vegn%dailyTrsp, vegn%dailyEvap,vegn%dailyRoff,      &
@@ -1019,6 +1034,7 @@ subroutine daily_diagnostics(vegn,forcing,iyears,idoy,iday,fno3,fno4)
             vegn%mineralN*1000,   vegn%dailyNup*1000
       endif
 
+
         !annual tile
         ! Annual summary:
         vegn%annualNup  = vegn%annualNup  + vegn%dailyNup
@@ -1030,6 +1046,8 @@ subroutine daily_diagnostics(vegn,forcing,iyears,idoy,iday,fno3,fno4)
         vegn%annualTrsp = vegn%annualTrsp + vegn%dailytrsp
         vegn%annualEvap = vegn%annualEvap + vegn%dailyevap
         vegn%annualRoff = vegn%annualRoff + vegn%dailyRoff
+
+        ! print*,'vegn%dailyevap, vegn%annualEvap', vegn%dailyevap, vegn%annualEvap
 
        ! zero:
        vegn%dailyNup  = 0.0

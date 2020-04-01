@@ -186,11 +186,15 @@ program BiomeESS
 
              !! fast-step calls, hourly or half-hourly
              call vegn_CNW_budget_fast(vegn,forcingData(idata))
+
+             ! ! xxx consistency check
+             ! forcingData(idata)%tsoil = forcingData(idata)%Tair
+
              ! diagnostics
              call hourly_diagnostics(vegn,forcingData(idata),iyears,idoy,i,idays,fno1)
         enddo ! hourly or half-hourly
 
-        ! if (idoy == 365) stop 'consistency?'
+        if (idoy == 100 .and. iyears == 3) stop 'consistency?'
 
         vegn%Tc_daily = vegn%Tc_daily/steps_per_day
         tsoil         = tsoil/steps_per_day

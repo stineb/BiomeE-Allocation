@@ -1451,6 +1451,9 @@ subroutine vegn_N_uptake(vegn, tsoil)
   logical :: NSN_not_full
   integer :: i
 
+  ! ! xxx consistency checks
+  ! vegn%mineralN = 0.2
+
 !! Nitrogen uptake parameter
 ! It considers competition here. How much N one can absorp depends on 
 ! how many roots it has and how many roots other individuals have.
@@ -1473,6 +1476,9 @@ subroutine vegn_N_uptake(vegn, tsoil)
         ! Add a temperature response equation herefor rho_N_up0 (Zhu Qing 2016)
         ! rho_N_up = 1.-exp(-rho_N_up0 * N_roots/(N_roots0+N_roots) * hours_per_year * dt_fast_yr) ! rate at given root density and time period
         rho_N_up = rho_N_up0 * N_roots/(N_roots0+N_roots) * hours_per_year * dt_fast_yr
+
+        print*,'rho_N_up, mineralN, tsoil, Tfactor', rho_N_up, vegn%mineralN, tsoil, exp(9000.0 * (1./298.16 - 1./tsoil))
+
         totNup = rho_N_up * vegn%mineralN * exp(9000.0 * (1./298.16 - 1./tsoil)) ! kgN m-2 time step-1
         avgNup = totNup / N_roots ! kgN time step-1 kg roots-1
         ! Nitrogen uptaken by each cohort, N_uptake

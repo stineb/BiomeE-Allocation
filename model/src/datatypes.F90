@@ -807,7 +807,7 @@ subroutine Zero_diagnostics(vegn)
   type(cohort_type),pointer :: cc
   integer :: i
 
-  print*,'Zero_diagnostics() 1: vegn%dailyEvap ', vegn%dailyEvap
+  ! print*,'Zero_diagnostics() 1: vegn%dailyEvap ', vegn%dailyEvap
 
   !daily
   vegn%dailyfixedN = 0.
@@ -867,7 +867,7 @@ subroutine Zero_diagnostics(vegn)
      cc%DBH_ys    = cc%DBH
   enddo
 
-  print*,'Zero_diagnostics() 2: vegn%dailyEvap ', vegn%dailyEvap
+  ! print*,'Zero_diagnostics() 2: vegn%dailyEvap ', vegn%dailyEvap
 
 end subroutine Zero_diagnostics
 

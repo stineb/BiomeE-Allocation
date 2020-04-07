@@ -218,7 +218,7 @@ program BiomeESS
              call hourly_diagnostics(vegn,forcingData(idata),iyears,idoy,i,idays,fno1)
         enddo ! hourly or half-hourly
 
-        if (idoy == 100 .and. iyears == 3) stop 'consistency?'
+        ! if (idoy == 100 .and. iyears == 3) stop 'consistency?'
 
         vegn%Tc_daily = vegn%Tc_daily/steps_per_day
         tsoil         = tsoil/steps_per_day
@@ -237,7 +237,7 @@ program BiomeESS
         ! print*,'8: ', vegn%LAI
         call vegn_growth_EW(vegn)
 
-        if (idays>3) stop 'here'
+        ! if (idays>3) stop 'here'
 
         !! annual calls
         idata = MOD(simu_steps+1, datalines)+1 !

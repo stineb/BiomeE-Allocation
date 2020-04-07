@@ -670,7 +670,7 @@ subroutine fetch_CN_for_growth(cc)
         cc%leafarea  = leaf_area_from_biomass(cc%bl,cc%species,cc%layer,cc%firstlayer)
         cc%lai       = cc%leafarea/cc%crownarea !(cc%crownarea *(1.0-sp%internal_gap_frac))
         
-        print*, 'vegn growth',  vegn%LAI, cc%leafarea, cc%nindivs, cc%crownarea    ! xxx debug
+        ! print*, 'vegn growth',  vegn%LAI, cc%leafarea, cc%nindivs, cc%crownarea    ! xxx debug
 
         vegn%LAI     = vegn%LAI + cc%leafarea  * cc%nindivs
 
@@ -1487,7 +1487,7 @@ subroutine vegn_N_uptake(vegn, tsoil)
         ! rho_N_up = 1.-exp(-rho_N_up0 * N_roots/(N_roots0+N_roots) * hours_per_year * dt_fast_yr) ! rate at given root density and time period
         rho_N_up = rho_N_up0 * N_roots/(N_roots0+N_roots) * hours_per_year * dt_fast_yr
 
-        print*,'rho_N_up, mineralN, tsoil, Tfactor', rho_N_up, vegn%mineralN, tsoil, exp(9000.0 * (1./298.16 - 1./tsoil))
+        ! print*,'rho_N_up, mineralN, tsoil, Tfactor', rho_N_up, vegn%mineralN, tsoil, exp(9000.0 * (1./298.16 - 1./tsoil))
 
         totNup = rho_N_up * vegn%mineralN * exp(9000.0 * (1./298.16 - 1./tsoil)) ! kgN m-2 time step-1
         avgNup = totNup / N_roots ! kgN time step-1 kg roots-1
